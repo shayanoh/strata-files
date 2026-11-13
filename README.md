@@ -255,6 +255,14 @@ cd strata-files
 scripts/build.sh release --open
 ```
 
+### Intel Macs and macOS 15
+
+This branch (`macos15-intel-support`) builds and runs Strata on **Intel Macs** and on **macOS 15 (Sequoia)**, which the official releases don't support
+(they need Apple silicon and macOS 26). Run `scripts/build.sh release` and open `build/Strata.app`. On macOS 15 there is no Liquid Glass, the status and
+notice bars are plain views rather than native accessories, and Apple Intelligence features are unavailable (Ask Strata's built-in rules still work).
+[docs/macos15-intel.md](docs/macos15-intel.md) lists every change, the Swift 6.2 compiler problems and the layout bugs found on the way, what has been
+tested, and what hasn't.
+
 For the best experience, give Strata **Full Disk Access** in System Settings ▸ Privacy & Security, so it can search
 and measure everything without asking folder by folder. Strata walks you through it on first launch.
 

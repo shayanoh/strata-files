@@ -1,3 +1,4 @@
+import StrataSupport
 import AppKit
 
 /// Full-screen titlebar sections have opaque backing layers above the window's canvas.
@@ -50,10 +51,10 @@ package final class ToolbarBackdropTint {
         guard let root = window.contentView else { return }
         func visit(_ view: NSView) {
             guard !(view is NSControl) else { return }
-            if view is NSVisualEffectView || view is NSGlassEffectView {
+            if view is NSVisualEffectView || GlassCompat.isGlass(view) {
                 var ancestor = view.superview
                 while let candidate = ancestor, candidate !== root {
-                    if candidate is NSVisualEffectView || candidate is NSGlassEffectView { break }
+                    if candidate is NSVisualEffectView || GlassCompat.isGlass(candidate) { break }
                     if let binding = bindings.object(forKey: candidate) {
                         if binding.ownsCurrentLayer {
                             binding.apply()

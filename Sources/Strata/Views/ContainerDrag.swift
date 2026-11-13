@@ -57,9 +57,11 @@ package nonisolated final class ContainerPromises: NSObject, NSFilePromiseProvid
     package func filePromiseProvider(_ provider: NSFilePromiseProvider, writePromiseTo url: URL, completionHandler: @escaping (Error?) -> Void) {
         guard let item = provider as? ContainerDragItem else { return completionHandler(CocoaError(.fileNoSuchFile)) }
         let source = item.source
-        let copies = item.copies
+        nonisolated(unsafe) let copies = item.copies
         let done = DispatchSemaphore(value: 0)
-        nonisolated(unsafe) var failure: Error?
+        // Swift 6.2 won't let a task capture a variable the caller reads after the semaphore; a box ordered by `done` is the same.
+        final class Failure: @unchecked Sendable { var error: Error? }
+        let failure = Failure()
         Task {
             do {
                 try await copies.prepareForCopying([source])
@@ -70,11 +72,11 @@ package nonisolated final class ContainerPromises: NSObject, NSFilePromiseProvid
                 }
                 try result.get()
             } catch {
-                failure = error
+                failure.error = error
             }
             done.signal()
         }
         done.wait()
-        completionHandler(failure)
+        completionHandler(failure.error)
     }
 }

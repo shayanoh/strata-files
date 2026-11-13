@@ -1,3 +1,4 @@
+import StrataSupport
 import AppKit
 import Synchronization
 
@@ -352,7 +353,7 @@ package enum ThemeStyle {
     }
 
     package static func tintHeaderMaterial(_ view: NSView, withinWindow: Bool = false) {
-        guard view is NSGlassEffectView || (withinWindow && view is NSVisualEffectView)
+        guard GlassCompat.isGlass(view) || (withinWindow && view is NSVisualEffectView)
                 || headerMaterials.object(forKey: view) != nil else { return }
         if headerMaterials.object(forKey: view) == nil { headerMaterials.setObject(HeaderMaterialTint(view), forKey: view) }
         headerMaterials.object(forKey: view)?.apply(to: view, withinWindow: withinWindow)

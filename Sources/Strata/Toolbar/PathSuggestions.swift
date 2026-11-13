@@ -177,7 +177,7 @@ final class PathSuggestionList: NSObject {
     }
 
     private func build() {
-        let glass = NSGlassEffectView()
+        let glass = GlassView()
         glass.cornerRadius = 14
         let content = NSView()
 

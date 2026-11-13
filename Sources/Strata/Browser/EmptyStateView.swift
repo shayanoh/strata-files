@@ -1,3 +1,4 @@
+import StrataSupport
 import AppKit
 
 /// Centered message for empty folders and folders we can't read.
@@ -64,7 +65,7 @@ final class EmptyStateView: NSView {
 
 /// Floating glass capsule showing the type-to-filter query.
 final class FilterPill: NSView {
-    private let glass = NSGlassEffectView()
+    private let glass = GlassView()
     private let query = NSTextField(labelWithString: "")
     private let count = NSTextField(labelWithString: "")
 

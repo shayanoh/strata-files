@@ -1,3 +1,4 @@
+import StrataSupport
 import AppKit
 
 /// Restore AppKit’s original named color and material settings, not a custom color resolving to the same RGB values.
@@ -11,7 +12,7 @@ package final class ThemeWindowBinding: NSObject {
         background = window.backgroundColor
         transparent = window.titlebarAppearsTransparent
         let items = (window.contentViewController as? any ThemeSplitWindowContent)?.splitViewItems
-        adjustsSafeArea = items.flatMap { $0.indices.contains(1) ? $0[1].automaticallyAdjustsSafeAreaInsets : nil }
+        adjustsSafeArea = items.flatMap { $0.indices.contains(1) ? GlassCompat.adjustsSafeAreaInsets($0[1]) : nil }
         super.init()
     }
 
@@ -22,9 +23,9 @@ package final class ThemeWindowBinding: NSObject {
            split.splitViewItems.indices.contains(1), let adjustsSafeArea {
             let item = split.splitViewItems[1]
             let extend = ThemeStyle.colorsSurfaces || adjustsSafeArea
-            if item.automaticallyAdjustsSafeAreaInsets != extend {
+            if GlassCompat.adjustsSafeAreaInsets(item) != extend {
                 // One canvas beneath the floating panels avoids a second, focus-dependent backdrop at their edges.
-                item.automaticallyAdjustsSafeAreaInsets = extend
+                GlassCompat.setAdjustsSafeAreaInsets(extend, on: item)
                 window.contentView?.layoutSubtreeIfNeeded()
             }
         }

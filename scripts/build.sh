@@ -24,14 +24,14 @@ fi
 if [[ -n "${STRATA_BUILD_NUMBER:-}" && ! "$STRATA_BUILD_NUMBER" =~ ^[0-9]+$ ]]; then
   echo "STRATA_BUILD_NUMBER must be digits" >&2; exit 1
 fi
-swift build -c "$config" --arch arm64 --product Strata
-swift build -c "$config" --arch arm64 --product StrataCLI
-swift build -c "$config" --arch arm64 --product StrataArchiveService
-swift build -c "$config" --arch arm64 --product StrataTableWorker
-swift build -c "$config" --arch arm64 --product StrataMediaWorker
-swift build -c "$config" --arch arm64 --product StrataArchiveWorker
-swift build -c "$config" --arch arm64 --product StrataResourceCheck
-bins="$(swift build -c "$config" --arch arm64 --show-bin-path)"
+swift build -c "$config" --arch x86_64 --product Strata
+swift build -c "$config" --arch x86_64 --product StrataCLI
+swift build -c "$config" --arch x86_64 --product StrataArchiveService
+swift build -c "$config" --arch x86_64 --product StrataTableWorker
+swift build -c "$config" --arch x86_64 --product StrataMediaWorker
+swift build -c "$config" --arch x86_64 --product StrataArchiveWorker
+swift build -c "$config" --arch x86_64 --product StrataResourceCheck
+bins="$(swift build -c "$config" --arch x86_64 --show-bin-path)"
 
 app=build/Strata.app
 rm -rf "$app"

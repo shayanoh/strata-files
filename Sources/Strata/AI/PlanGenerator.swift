@@ -230,7 +230,7 @@ package nonisolated enum PlanGenerator {
         guard !request.items.isEmpty else { throw PlanError.nothingSelected }
         let rules = PlanRules.recipe(for: request.instruction, now: request.now)
         let useModel = allowModel && AIModel.isAvailable && (rules == nil || rules?.fullyUnderstood == false)
-        if useModel {
+        if #available(macOS 26, *), useModel {
             do {
                 let answer = try await ModelPlanner.plan(request)
                 switch answer {
@@ -419,6 +419,7 @@ package nonisolated enum PlanRules {
 
 /// Guided generation: the model either picks a recipe (preferred) or, for small selections and one-off requests, lists
 /// explicit operations by item number. Either way the output is constrained by the schema and validated afterwards.
+@available(macOS 26, *)
 package nonisolated enum ModelPlanner {
     package enum Answer: Sendable {
         case recipe(PlanRecipe)

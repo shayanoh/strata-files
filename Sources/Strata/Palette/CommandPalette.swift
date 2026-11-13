@@ -678,7 +678,7 @@ final class PaletteRanker {
 /// follows the panel and, on a focused one, rings it in dark ink; this one follows the glass's rounded shape.
 final class ShadowedGlass: NSView {
     static let margin: CGFloat = 28
-    let glass = NSGlassEffectView()
+    let glass = GlassView()
     private let shadowView = NSView()
     private let cornerRadius: CGFloat
 

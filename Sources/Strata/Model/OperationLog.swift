@@ -219,11 +219,15 @@ package final class OperationLog {
     /// What goes back: each moved or replaced item still the one the operation left, to a place that's free (nothing
     /// there, the item itself, or a place another of its moves vacates first). Read away from the main thread.
     @concurrent private static func movesBack(_ entry: Entry) async -> [FileOps.Move] {
-        (entry.moves.reversed() + entry.replacements.reversed()).filter { holdsOriginal(entry, $0.to) }.map {
+        let reversedMoves: [HistoryMove] = Array(entry.moves.reversed()) + Array(entry.replacements.reversed())
+        let held: [HistoryMove] = reversedMoves.filter { holdsOriginal(entry, $0.to) }
+        let candidates: [FileOps.Move] = held.map {
             (from: URL(fileURLWithPath: $0.to), to: URL(fileURLWithPath: $0.from))
-        }.filter { move in
-            identity(move.to.path) == nil || identity(move.to.path) == identity(move.from.path)
-                || entry.moves.contains { $0.to == move.to.path && holdsOriginal(entry, $0.to) }
+        }
+        return candidates.filter { (move: FileOps.Move) -> Bool in
+            let target = identity(move.to.path)
+            if target == nil || target == identity(move.from.path) { return true }
+            return entry.moves.contains { $0.to == move.to.path && holdsOriginal(entry, $0.to) }
         }
     }
 

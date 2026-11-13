@@ -1,3 +1,4 @@
+import StrataSupport
 import AppKit
 
 /// Use glass's public tint rather than painting subviews over AppKit's material and its private masks.
@@ -13,7 +14,7 @@ package final class HeaderMaterialTint: NSObject {
     private var withinWindow = false
 
     package init(_ view: NSView) {
-        nativeTint = (view as? NSGlassEffectView)?.tintColor
+        nativeTint = GlassCompat.tint(of: view)
         nativeBlending = (view as? NSVisualEffectView)?.blendingMode
         nativeMaterial = (view as? NSVisualEffectView)?.material
         fillTint = (view as? NSVisualEffectView).map(NativeHeaderFillTint.init)
@@ -56,15 +57,15 @@ package final class HeaderMaterialTint: NSObject {
         }
         fillTint?.apply(enabled: colored && withinWindow)
         // AppKit owns the material's active state, including in the detached full-screen toolbar.
-        if let glass = view as? NSGlassEffectView {
+        if GlassCompat.isGlass(view) {
             if colored {
                 if appliedOptions != ThemeStyle.options {
                     appliedTint = ThemeStyle.surface(.content).withAlphaComponent(0.38)
                     appliedOptions = ThemeStyle.options
                 }
-                if glass.tintColor != appliedTint { glass.tintColor = appliedTint }
-            } else if glass.tintColor != nativeTint {
-                glass.tintColor = nativeTint
+                if GlassCompat.tint(of: view) != appliedTint { GlassCompat.setTint(appliedTint, on: view) }
+            } else if GlassCompat.tint(of: view) != nativeTint {
+                GlassCompat.setTint(nativeTint, on: view)
             }
         }
     }
@@ -75,7 +76,7 @@ package final class HeaderMaterialTint: NSObject {
         withinWindow = false
         observations.removeAll()
         fillTint?.restore()
-        (view as? NSGlassEffectView)?.tintColor = nativeTint
+        GlassCompat.setTint(nativeTint, on: view)
         if let material = view as? NSVisualEffectView, let nativeBlending { material.blendingMode = nativeBlending }
         if let material = view as? NSVisualEffectView, let nativeMaterial { material.material = nativeMaterial }
     }

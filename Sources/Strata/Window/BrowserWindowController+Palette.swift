@@ -12,11 +12,16 @@ extension BrowserWindowController {
         let places = services.places
         palette.lateItems = { [weak self] query in
             // Both at once: a folder walk on a slow disk mustn't hold up what the index finds.
-            async let found = self?.indexItems(query) ?? []
-            let rows = await PaletteItem.lookupRows(for: query, in: places) { [weak self] url, isFolder in
-                if isFolder { self?.navigate(to: url) } else { self?.navigate(to: url.deletingLastPathComponent(), select: url) }
+            // Swift 6.2 rejects `async let` sending `self`; an explicit main-actor task, cancelled with its caller, is the same.
+            let found = Task { @MainActor [weak self] in await self?.indexItems(query) ?? [] }
+            return await withTaskCancellationHandler {
+                let rows = await PaletteItem.lookupRows(for: query, in: places) { [weak self] url, isFolder in
+                    if isFolder { self?.navigate(to: url) } else { self?.navigate(to: url.deletingLastPathComponent(), select: url) }
+                }
+                return rows + (await found.value)
+            } onCancel: {
+                found.cancel()
             }
-            return rows + (await found)
         }
         palette.show(in: window, items: paletteItems())
     }

@@ -1,7 +1,7 @@
 import AppKit
 
 /// Item count, selection size and free space, attached under the file list.
-final class StatusBarController: NSSplitViewItemAccessoryViewController {
+final class StatusBarController: AccessoryBarController {
     var details: String? {
         get { status.label.toolTip }
         set { status.label.toolTip = newValue }

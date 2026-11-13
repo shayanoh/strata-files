@@ -14,6 +14,10 @@ package final class BatchedReads<Value: Sendable> {
     private var collecting: Task<Void, Never>?
     private var batches: [String: Task<Void, Never>] = [:]
 
+    // Swift 6.2's optimizer crashes on the synthesized deinit of a generic main-actor class that stores a Task; an empty
+    // explicit one is the same and compiles.
+    nonisolated deinit {}
+
     package init(read: @escaping @Sendable ([String]) -> [String: Value],
                  arrived: @escaping ([String: Value]) -> Void) {
         self.read = read

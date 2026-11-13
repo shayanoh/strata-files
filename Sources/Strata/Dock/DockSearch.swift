@@ -18,7 +18,7 @@ final class DockSearch: NSObject, NSTextFieldDelegate, NSTableViewDataSource, NS
                                           styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
     private let field = NSTextField()
     private let table = PressedRowTable()
-    private let boxGlass = NSGlassEffectView()
+    private let boxGlass = GlassView()
     private let ranker = PaletteRanker()
     private var follower: Timer?
     private let reader = DockReader()

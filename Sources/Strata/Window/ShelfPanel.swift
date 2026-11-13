@@ -1,3 +1,4 @@
+import StrataSupport
 import AppKit
 
 /// A floating shelf: drop files from anywhere, then drag them all out at once or move/copy them into the current
@@ -19,7 +20,7 @@ final class ShelfPanel: NSPanel {
         isMovableByWindowBackground = true
         setFrameAutosaveName("StrataShelf")
 
-        let glass = NSGlassEffectView()
+        let glass = GlassView()
         glass.cornerRadius = 16
         well.translatesAutoresizingMaskIntoConstraints = false
         let container = NSView()

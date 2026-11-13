@@ -56,8 +56,9 @@ extension Notification.Name {
     /// Where `github/acme`-style lookups start: the favorites, the disks (servers too when `servers`), home and the
     /// folders in `visited` used most.
     package func lookupRoots(visited: [URL], servers: Bool) -> [URL] {
-        Places.favorites(preferences: preferences, checks: self).map(\.url)
-            + snapshot.volumes.filter { servers || $0.symbol != "network" }.map(\.url) + [Places.home] + visited.prefix(100)
+        let favorites: [URL] = Places.favorites(preferences: preferences, checks: self).map(\.url)
+        let disks: [URL] = snapshot.volumes.filter { servers || $0.symbol != "network" }.map(\.url)
+        return favorites + disks + [Places.home] + Array(visited.prefix(100))
     }
 
     /// Reads them all again, once the read under way (if any) is done.

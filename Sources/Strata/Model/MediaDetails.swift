@@ -243,7 +243,7 @@ nonisolated package struct MediaDetails: Equatable, Sendable {
         guard !Task.isCancelled, let items = try? await asset.load(.commonMetadata), !items.isEmpty else {
             return (nil, nil, nil, nil)
         }
-        func firstString(_ id: AVMetadataIdentifier) async -> String? {
+        nonisolated(nonsending) func firstString(_ id: AVMetadataIdentifier) async -> String? {
             guard !Task.isCancelled,
                   let item = AVMetadataItem.metadataItems(from: items, filteredByIdentifier: id).first,
                   let value = try? await item.load(.stringValue) else { return nil }
